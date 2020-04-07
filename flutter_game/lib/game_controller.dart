@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flame/game.dart';
 import 'package:flame/flame.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_game/components/player.dart';
 
 class GameController extends Game {
@@ -35,6 +36,10 @@ class GameController extends Game {
     screenSize = size;
     tileSize = screenSize.width / 10;
 
+  }
+
+  void onTapDown (TapDownDetails d) {
+    print(d.globalPosition);
   }
 
 }
