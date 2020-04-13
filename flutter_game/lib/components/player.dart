@@ -22,6 +22,11 @@ class Player {
   }
 
   void update (double t) {
+    print(currentHealth);
+    
+    if ( !isDead && currentHealth <= 0 ) {
+      isDead = true;
+    }
 
   }
 
