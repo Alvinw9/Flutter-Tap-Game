@@ -74,6 +74,8 @@ class Enemy {
 
       if ( health <= 0 ) {
         isDead = true;
+        gameController.score++;
+        print(gameController.score);
       }
 
     }
