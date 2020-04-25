@@ -25,6 +25,7 @@ class Player {
     
     if ( !isDead && currentHealth <= 0 ) {
       isDead = true;
+      gameController.initialize();
     }
 
   }

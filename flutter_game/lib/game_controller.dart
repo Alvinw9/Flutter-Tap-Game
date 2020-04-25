@@ -6,10 +6,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_game/components/enemy_spawner.dart';
 import 'package:flutter_game/components/health_bar.dart';
 import 'package:flutter_game/components/player.dart';
+import 'package:flutter_game/components/score_text.dart';
+import 'package:flutter_game/curr_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'components/enemy.dart';
 
 class GameController extends Game {
 
+  final SharedPreferences storage;
   Random rand;
   Size screenSize;
   double tileSize;
@@ -18,20 +22,24 @@ class GameController extends Game {
   List<Enemy> enemies;
   HealthBar healthBar;
   int score;
+  ScoreText scoreText;
+  CurrState state;
 
-  GameController () {
+  GameController (this.storage) {
     initialize();
   }
 
   void initialize() async {
 
     resize(await Flame.util.initialDimensions());
+    state = CurrState.menu;
     rand = Random();
     player = Player(this);
     enemies = List<Enemy>();
     enemySpawner = EnemySpawner(this);
     healthBar = HealthBar(this);
     score = 0;
+    scoreText = ScoreText(this);
 
   }
 
@@ -42,18 +50,37 @@ class GameController extends Game {
     c.drawRect(background, backgroundPaint);
 
     player.render(c);
-    enemies.forEach((Enemy enemy) => enemy.render(c));
-    healthBar.render(c);
+
+    if ( state == CurrState.menu ) {
+  
+
+
+    } else if ( state == CurrState.playing ) {
+
+      enemies.forEach((Enemy enemy) => enemy.render(c));
+      scoreText.render(c);
+      healthBar.render(c);
+
+    }
     
   }
 
   void update (double t) {
 
-    enemySpawner.update(t);
-    enemies.forEach((Enemy enemy) => enemy.update(t));
-    enemies.removeWhere((Enemy enemy) => enemy.isDead);
-    player.update(t);
-    healthBar.update(t);
+    if ( state == CurrState.menu ) {
+
+
+
+    } else if ( state == CurrState.playing ) {
+
+      enemySpawner.update(t);
+      enemies.forEach((Enemy enemy) => enemy.update(t));
+      enemies.removeWhere((Enemy enemy) => enemy.isDead);
+      player.update(t);
+      scoreText.update(t);
+      healthBar.update(t);
+    
+    }
 
   }
 
