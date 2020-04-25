@@ -5,8 +5,10 @@ import 'package:flame/flame.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_game/components/enemy_spawner.dart';
 import 'package:flutter_game/components/health_bar.dart';
+import 'package:flutter_game/components/highscore_text.dart';
 import 'package:flutter_game/components/player.dart';
 import 'package:flutter_game/components/score_text.dart';
+import 'package:flutter_game/components/start_text.dart';
 import 'package:flutter_game/curr_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'components/enemy.dart';
@@ -24,6 +26,8 @@ class GameController extends Game {
   int score;
   ScoreText scoreText;
   CurrState state;
+  HighScoreText highScoreText;
+  StartText startText;
 
   GameController (this.storage) {
     initialize();
@@ -40,6 +44,8 @@ class GameController extends Game {
     healthBar = HealthBar(this);
     score = 0;
     scoreText = ScoreText(this);
+    highScoreText = HighScoreText(this);
+    startText = StartText(this);
 
   }
 
@@ -53,7 +59,8 @@ class GameController extends Game {
 
     if ( state == CurrState.menu ) {
   
-
+      startText.render(c);
+      highScoreText.render(c);
 
     } else if ( state == CurrState.playing ) {
 
@@ -69,7 +76,8 @@ class GameController extends Game {
 
     if ( state == CurrState.menu ) {
 
-
+      startText.update(t);
+      highScoreText.update(t);
 
     } else if ( state == CurrState.playing ) {
 
@@ -92,15 +100,20 @@ class GameController extends Game {
   }
 
   void onTapDown (TapDownDetails d) {
-    
-    print(d.globalPosition);
-    enemies.forEach((Enemy enemy) {
 
-      if ( enemy.enemyRect.contains(d.globalPosition) ) {
-        enemy.onTapDown();
-      }
+    if ( state == CurrState.menu ) {
+      state = CurrState.playing;
+    } else if ( state == CurrState.playing ) {
 
-    });
+      enemies.forEach((Enemy enemy) {
+
+        if ( enemy.enemyRect.contains(d.globalPosition) ) {
+          enemy.onTapDown();
+        }
+
+      });
+
+    }
   }
 
   void spawnEnemy() {
